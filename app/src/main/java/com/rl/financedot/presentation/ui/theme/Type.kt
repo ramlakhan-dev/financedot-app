@@ -1,4 +1,4 @@
-package com.rl.financedot.ui.theme
+package com.rl.financedot.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 
