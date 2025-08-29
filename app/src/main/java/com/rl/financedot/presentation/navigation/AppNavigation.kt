@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.rl.financedot.presentation.screens.auth.resetpassword.ResetPassword
 import com.rl.financedot.presentation.screens.auth.signin.SignIn
 import com.rl.financedot.presentation.screens.auth.signup.SignUp
 import com.rl.financedot.presentation.screens.home.Home
@@ -29,6 +30,13 @@ fun AppNavigation(
 
         composable(route = Screen.SignIn.route) {
             SignIn(
+                modifier = modifier,
+                navController = navController
+            )
+        }
+
+        composable(route = Screen.ResetPassword.route) {
+            ResetPassword(
                 modifier = modifier,
                 navController = navController
             )

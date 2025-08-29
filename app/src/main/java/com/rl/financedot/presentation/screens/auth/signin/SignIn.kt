@@ -109,7 +109,11 @@ fun SignIn(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
-                )
+                ),
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate(route = Screen.ResetPassword.route)
+                    }
             )
         }
 
