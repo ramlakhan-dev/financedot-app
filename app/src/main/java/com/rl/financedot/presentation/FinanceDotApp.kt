@@ -1,15 +1,22 @@
 package com.rl.financedot.presentation
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.rl.financedot.R
 import com.rl.financedot.presentation.navigation.AppNavigation
 import com.rl.financedot.presentation.navigation.Screen
 
@@ -27,6 +34,8 @@ fun FinanceDotApp() {
         Screen.Home.route -> Screen.Home.title
         else -> ""
     }
+
+    val showBackArrow = currentRoute != Screen.SignIn.route && currentRoute != Screen.Home.route
     Scaffold(
         topBar = {
             TopAppBar(
@@ -34,6 +43,22 @@ fun FinanceDotApp() {
                     Text(
                         text = title
                     )
+                },
+                navigationIcon = {
+                    if(showBackArrow) {
+                        IconButton(
+                            onClick = {
+                                navController.popBackStack()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(id = R.string.arrow_back)
+                            )
+                        }
+                    } else {
+                        null
+                    }
                 }
             )
         }

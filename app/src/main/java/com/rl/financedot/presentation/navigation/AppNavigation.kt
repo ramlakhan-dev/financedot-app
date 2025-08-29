@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.rl.financedot.presentation.screens.auth.signin.SignIn
 import com.rl.financedot.presentation.screens.auth.signup.SignUp
+import com.rl.financedot.presentation.screens.home.Home
 
 @Composable
 fun AppNavigation(
@@ -28,6 +29,13 @@ fun AppNavigation(
 
         composable(route = Screen.SignIn.route) {
             SignIn(
+                modifier = modifier,
+                navController = navController
+            )
+        }
+
+        composable(route = Screen.Home.route) {
+            Home(
                 modifier = modifier,
                 navController = navController
             )

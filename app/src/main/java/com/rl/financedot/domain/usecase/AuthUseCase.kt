@@ -32,8 +32,8 @@ class SignInUseCase @Inject constructor(
 class GetCurrentUserUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    operator fun invoke() {
-        authRepository.getCurrentUser()
+    operator fun invoke(): FirebaseUser? {
+        return authRepository.getCurrentUser()
     }
 }
 
