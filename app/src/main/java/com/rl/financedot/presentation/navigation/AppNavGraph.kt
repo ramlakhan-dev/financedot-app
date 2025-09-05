@@ -71,7 +71,10 @@ fun AppNavGraph(
             route = Screen.ResetPassword.route
         ) {
             ResetPasswordScreen(
-                modifier = modifier
+                modifier = modifier,
+                onSuccess = {
+                    navController.popBackStack()
+                }
             )
         }
 

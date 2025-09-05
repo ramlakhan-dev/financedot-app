@@ -14,4 +14,7 @@
     <string name="sign_up">Sign Up</string>
     <string name="message_no_account">Don\'t have an account?</string>
     <string name="message_have_account">Already have an account?</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="reset_password_message">Enter your email to receive a reset link.</string>
+    <string name="send">Send</string>
 </resources>
