@@ -10,20 +10,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.rl.financedot.R
 import com.rl.financedot.presentation.navigation.AppNavGraph
 import com.rl.financedot.presentation.navigation.Screen
+import com.rl.financedot.presentation.state.AuthState
+import com.rl.financedot.presentation.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App() {
 
+    val authViewModel: AuthViewModel = hiltViewModel()
+    val userState by authViewModel.userState.collectAsState()
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
@@ -62,7 +68,7 @@ fun App() {
         AppNavGraph(
             modifier = Modifier.padding(innerPadding),
             navController = navController,
-            isUserSignedIn = false
+            isUserSignedIn = userState is AuthState.Authenticated
         )
     }
 }
