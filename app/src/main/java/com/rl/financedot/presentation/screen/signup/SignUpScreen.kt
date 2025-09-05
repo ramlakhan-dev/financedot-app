@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -16,9 +17,12 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,8 +36,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rl.financedot.R
 import com.rl.financedot.presentation.component.OutlinedInputField
+import com.rl.financedot.presentation.state.AuthState
 
 @Composable
 fun SignUpScreen(
@@ -42,6 +48,9 @@ fun SignUpScreen(
     onSignInClick: () -> Unit
 ) {
 
+    val signUpViewModel: SignUpViewModel = hiltViewModel()
+    val authState by signUpViewModel.authState.collectAsState()
+
     var name by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -49,6 +58,13 @@ fun SignUpScreen(
     var nameError by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf(false) }
     var passwordError by remember { mutableStateOf(false) }
+
+
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Authenticated) {
+            onSignUp()
+        }
+    }
 
     Column (
         modifier = modifier.fillMaxSize()
@@ -130,20 +146,38 @@ fun SignUpScreen(
             )
 
 
+            if (authState is AuthState.Error) {
+                Text(
+                    text = (authState as AuthState.Error).message,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(vertical = 16.dp)
+                )
+            }
+
             Button(
                 onClick = {
-
+                    signUpViewModel.signUp(name, email, password)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 24.dp)
                     .height(48.dp),
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(10.dp),
+                enabled = name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
             ) {
-                Text(
-                    text = stringResource(id = R.string.sign_up),
-                    fontWeight = FontWeight.Bold
-                )
+                if(authState is AuthState.Loading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(20.dp)
+                    )
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.sign_up),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
 
