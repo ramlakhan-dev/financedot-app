@@ -9,15 +9,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,8 +35,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.rl.financedot.R
 import com.rl.financedot.presentation.component.OutlinedInputField
+import com.rl.financedot.presentation.state.AuthState
 
 @Composable
 fun SignInScreen(
@@ -42,11 +48,20 @@ fun SignInScreen(
     onSignUpClick: () -> Unit
 ) {
 
+    val signInViewModel: SignInViewModel = hiltViewModel()
+    val authState by signInViewModel.authState.collectAsState()
+
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
     var emailError by remember { mutableStateOf(false) }
     var passwordError by remember { mutableStateOf(false)}
+
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Authenticated) {
+            onSignIn()
+        }
+    }
 
     Column(
         modifier = modifier
@@ -115,20 +130,38 @@ fun SignInScreen(
                     }
             )
 
+            if (authState is AuthState.Error) {
+                Text(
+                    text = (authState as AuthState.Error).message,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(vertical = 16.dp)
+                )
+            }
+
             Button(
                 onClick = {
-
+                    signInViewModel.signIn(email, password)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 24.dp)
                     .height(48.dp),
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(10.dp),
+                enabled = email.isNotEmpty() && password.isNotEmpty()
             ) {
-                Text(
-                    text = stringResource(id = R.string.sign_in),
-                    fontWeight = FontWeight.Bold
-                )
+                if (authState is AuthState.Loading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(20.dp)
+                    )
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.sign_in),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
 
