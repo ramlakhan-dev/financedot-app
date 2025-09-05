@@ -25,7 +25,21 @@ fun AppNavGraph(
             route = Screen.SignIn.route
         ) {
             SignInScreen(
-                modifier = modifier
+                modifier = modifier,
+                onSignIn = {
+                    navController.navigate(route = Screen.Home.route) {
+                        popUpTo(route = Screen.SignIn.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                onForgotPasswordClick = {
+                    navController.navigate(route = Screen.ResetPassword.route)
+                },
+                onSignUpClick = {
+                    navController.navigate(route = Screen.SignUp.route)
+                }
             )
         }
 
@@ -33,7 +47,23 @@ fun AppNavGraph(
             route = Screen.SignUp.route
         ) {
             SignUpScreen(
-                modifier = modifier
+                modifier = modifier,
+                onSignUp = {
+                    navController.navigate(route = Screen.Home.route) {
+                        popUpTo(route = Screen.SignIn.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                onSignInClick = {
+                    navController.navigate(route = Screen.SignIn.route) {
+                        popUpTo(route = Screen.SignIn.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
 
